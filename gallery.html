@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gallery</title>
+  <link rel="stylesheet" type="text/css" href="style1.css">
+</head>
+<body>
+  <p class="logo">MEMORY MIND</p>
+  <a href="#" id="btn2">Contact</a>
+  <a href="#" id="btn3">About Us</a>
+
+  <h1>My Gallery</h1>
+  
+  <div class="container">
+    <div class="category">
+      <h2>Images <span id="image-count">0</span></h2>
+      <div class="file-list">
+        <h3>Files:</h3>
+        <ul id="image-list"></ul>
+      </div>
+      <div class="dates-list">
+        <h3>Dates:</h3>
+        <ul id="image-dates"></ul>
+      </div>
+    </div>
+  
+    <div class="category">
+      <h2>Videos <span id="video-count">0</span></h2>
+      <div class="file-list">
+        <h3>Files:</h3>
+        <ul id="video-list"></ul>
+      </div>
+      <div class="dates-list">
+        <h3>Dates:</h3>
+        <ul id="video-dates"></ul>
+      </div>
+    </div>
+  
+    <div class="category">
+      <h2>Documents <span id="document-count">0</span></h2>
+      <div class="file-list">
+        <h3>Files:</h3>
+        <ul id="document-list"></ul>
+      </div>
+      <div class="dates-list">
+        <h3>Dates:</h3>
+        <ul id="document-dates"></ul>
+      </div>
+    </div>
+  </div>
+  
+  
+  
+  <!-- Input field for file selection -->
+  <input type="file" id="file-input" multiple>
+  
+  <!-- Button to trigger file upload -->
+  <button id="upload-btn">Upload File</button>
+
+  <div class="container1">
+    <h1>Instructions</h1>
+    <ul>
+      <li><p>Click on the name of the file to access it.</p></li>
+      <li><p>You can only upload upto 1gb of data in one month.</p></li>
+      <li><p>Always refresh the page after upoading or deleting any file.</p></li>
+      <li><p>This website is only for project purpose and not a brand.</p></li>
+    </ul>
+  </div>
+  
+  <!-- Firebase SDK integration -->
+  <script type="module">
+    // Firebase SDK integration
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL, listAll, getMetadata, deleteObject } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
+
+    // Firebase configuration object
+    const firebaseConfig = {
+        apiKey: "AIzaSyBvNns64qZq2124HMivJlEmZJOGZxhsgpk",
+        authDomain: "memory-mind-1c8a4.firebaseapp.com",
+        projectId: "memory-mind-1c8a4",
+        storageBucket: "memory-mind-1c8a4.appspot.com",
+        messagingSenderId: "449483611197",
+        appId: "1:449483611197:web:550f898f316eb038e09e54",
+        measurementId: "G-7ST62HV2QG"
+    };
+
+    // Initialize Firebase
+    initializeApp(firebaseConfig);
+
+    // Get a reference to the storage service
+    const storage = getStorage();
+
+    // File input element
+    const fileInput = document.getElementById('file-input');
+
+    // Upload button
+    const uploadBtn = document.getElementById('upload-btn');
+
+    // Category elements
+    const imageCategory = document.getElementById('image-category');
+    const videoCategory = document.getElementById('video-category');
+    const documentCategory = document.getElementById('document-category');
+
+    // File lists
+    const imageList = document.getElementById('image-list');
+    const videoList = document.getElementById('video-list');
+    const documentList = document.getElementById('document-list');
+
+    // Define variables for dates lists
+    const imageDates = document.getElementById('image-dates');
+    const videoDates = document.getElementById('video-dates');
+    const documentDates = document.getElementById('document-dates');
+    
+
+    // Function to update file count and list
+    const updateFileCountAndList = () => {
+    // Reference to the root of the storage
+    const storageRef = ref(storage);
+
+    // Get the list of all items in the storage
+    listAll(storageRef)
+        .then((res) => {
+        res.items.forEach((itemRef) => {
+            // Get the file extension from the item's name
+            const fileExtension = itemRef.name.split('.').pop().toLowerCase();
+
+            // Get the metadata for the item
+            getMetadata(itemRef)
+            .then((metadata) => {
+                // Extract the upload date from the metadata
+                const uploadDate = metadata.timeCreated;
+
+                // Format the upload date (example format: "June 11, 2023")
+                const formattedUploadDate = new Date(uploadDate).toLocaleDateString('en-US', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric',
+                });
+
+                // Get the download URL for the item
+                getDownloadURL(itemRef)
+                .then((downloadURL) => {
+                    // Update the file count and list based on the file extension
+                    switch (fileExtension) {
+                    case 'jpg':
+                    case 'jpeg':
+                    case 'png':
+                        imageList.innerHTML += `
+                        <li>
+                            <a href="${downloadURL}" target="_blank">${itemRef.name}</a>
+                            <button onclick="deleteFile('${itemRef.fullPath}', 'image')">Delete</button>
+                        </li>
+                        `;
+                        imageDates.innerHTML += `<li>${formattedUploadDate}</li>`;
+                        document.getElementById('image-count').textContent =
+                        parseInt(document.getElementById('image-count').textContent) + 1;
+                        break;
+                    case 'mp4':
+                    case 'avi':
+                    case 'mov':
+                        videoList.innerHTML += `
+                        <li>
+                            <a href="${downloadURL}" target="_blank">${itemRef.name}</a>
+                            <button onclick="deleteFile('${itemRef.fullPath}', 'video')">Delete</button>
+                        </li>
+                        `;
+                        videoDates.innerHTML += `<li>${formattedUploadDate}</li>`;
+                        document.getElementById('video-count').textContent =
+                        parseInt(document.getElementById('video-count').textContent) + 1;
+                        break;
+                    case 'pdf':
+                    case 'doc':
+                    case 'docx':
+                        documentList.innerHTML += `
+                        <li>
+                            <a href="${downloadURL}" target="_blank">${itemRef.name}</a>
+                            <button onclick="deleteFile('${itemRef.fullPath}', 'document')">Delete</button>
+                        </li>
+                        `;
+                        documentDates.innerHTML += `<li>${formattedUploadDate}</li>`;
+                        document.getElementById('document-count').textContent =
+                        parseInt(document.getElementById('document-count').textContent) + 1;
+                        break;
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error getting download URL:', error);
+                });
+            })
+            .catch((error) => {
+                console.error('Error getting metadata:', error);
+            });
+        });
+        })
+        .catch((error) => {
+        console.error('Error fetching file count:', error);
+        });
+    };
+
+    // Attach the deleteFile function to the global scope
+    window.deleteFile = (fileFullPath, category) => {
+    const fileRef = ref(storage, fileFullPath);
+
+    // Delete the file from storage
+    deleteObject(fileRef)
+        .then(() => {
+        console.log('File deleted successfully.');
+
+        // Refresh the file count and list for the corresponding category
+        switch (category) {
+            case 'image':
+            imageList.innerHTML = '';
+            imageDates.innerHTML = '';
+            document.getElementById('image-count').textContent = 0;
+            break;
+            case 'video':
+            videoList.innerHTML = '';
+            videoDates.innerHTML = '';
+            document.getElementById('video-count').textContent = 0;
+            break;
+            case 'document':
+            documentList.innerHTML = '';
+            documentDates.innerHTML = '';
+            document.getElementById('document-count').textContent = 0;
+            break;
+        }
+
+        // Update the file count and list
+        updateFileCountAndList();
+        })
+        .catch((error) => {
+        console.error('Error deleting file:', error);
+        });
+    };
+
+    // Event listener for file upload
+    uploadBtn.addEventListener('click', () => {
+    const file = fileInput.files[0];
+    const storageRef = ref(storage, file.name);
+
+    // Upload the file to Firebase Storage
+    uploadBytes(storageRef, file)
+        .then((snapshot) => {
+        console.log('File uploaded successfully!');
+        updateFileCountAndList();
+        })
+        .catch((error) => {
+        console.error('Error uploading file:', error);
+        });
+    });
+
+    // Load file count and list on page load
+    window.addEventListener('load', updateFileCountAndList);
+
+
+    // Toggle file list visibility on category click
+    imageCategory.addEventListener('click', () => {
+      imageList.style.display = (imageList.style.display === 'none') ? 'block' : 'none';
+    });
+    
+    videoCategory.addEventListener('click', () => {
+      videoList.style.display = (videoList.style.display === 'none') ? 'block' : 'none';
+    });
+    
+    documentCategory.addEventListener('click', () => {
+      documentList.style.display = (documentList.style.display === 'none') ? 'block' : 'none';
+    });
+
+  </script>
+</body>
+</html>

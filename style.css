@@ -1,0 +1,123 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap');
+*
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins' monospace;
+}
+
+body{
+    background-image: url("./img1.jpg");
+    min-height: 100vh;
+    align-content: center;
+    justify-content: center;
+}
+
+.logo {
+    color: rgb(241, 200, 17);
+    text-shadow: 0 5px 20px black;
+    position: absolute;
+    top: 30px;
+    left: 300px;
+    width: 60px; /* Adjust the width as needed */
+    height: auto;
+}
+
+#btn2 {
+    position: absolute;
+    top: 20px;
+    right: 180px;
+    padding: 15px;
+    text-decoration: none;
+    color: rgb(241, 200, 17);
+    font-weight: bold;
+    border: 2px solid rgb(241, 200, 17);
+    box-shadow: 0 5px 20px black;
+    border-radius: 10px;
+}
+
+#btn3 {
+    position: absolute;
+    top: 20px;
+    right: 300px;
+    padding: 15px;
+    text-decoration: none;
+    color: rgb(241, 200, 17);
+    font-weight: bold;
+    border: 2px solid rgb(241, 200, 17);
+    box-shadow: 0 5px 20px black;
+    border-radius: 10px;
+}
+
+.container{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 1200px;
+    flex-wrap: wrap;
+    z-index: 1;
+}
+
+.container .card{
+    position: relative;
+    bottom: -300px;
+    left: 115px;
+    font-size: 100px;
+    color: rgb(241, 200, 17);
+    text-shadow: -10px 10px 10px black;
+}
+
+.container .card1{
+    position: relative;
+    width: 650px;
+    height: 200px;
+    margin: 40px;
+    bottom: -280px;
+    left: 100px;
+    box-shadow: -10px 10px 10px rgba(0, 0, 0, 0.5);
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.445);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.5);
+    border-left: 1px solid rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(5px);
+}
+
+.container .card1 h1{
+    font-size: 20px;
+    margin-left: 30px;
+    margin-right: 10px;
+}
+
+.container .card1 h2{
+    font-size: 15px;
+    margin-left: 500px;
+}
+
+.container .card1 p{
+    font-size: 18px;
+    margin-top: 20px;
+    margin-right: 20px;
+    margin-left: 30px;
+}
+
+.container #btn1 {
+    text-decoration: none;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #000;
+    position: absolute;
+    margin-top: 950px;
+    padding: 15px;
+    width: 110px;
+    left: 87%;
+    background-color: rgb(241, 200, 17);
+    box-shadow: -10px 10px 10px black;
+    transform: translateX(-50%);
+    font-size: 25px;
+    border-radius: 10px;
+}
